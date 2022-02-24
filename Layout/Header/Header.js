@@ -2,6 +2,8 @@ import { Box, Typography, Link, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
 import User from './User/User';
+import NavBar from './HeaderNav/NavBar';
+import { useSelector } from 'react-redux';
 
 
 
@@ -29,6 +31,9 @@ const useStyles = makeStyles({
   },
   navBox: {
     width: '60%',
+    display:'flex',
+    flexDirection: 'row',
+    justifyContent: 'right'
   },
   userBox: {
     width: '20%',
@@ -51,6 +56,7 @@ const useStyles = makeStyles({
 const Header = () => {
 
   const classes = useStyles();
+  const userInfo = useSelector((state) => {return state.userInfo.value});
 
   return (
     <Box className={classes.root} sx={{ boxShadow: 2 }}>
@@ -61,7 +67,7 @@ const Header = () => {
           </Link>
         </Box>
         <Box className={classes.navBox}>
-
+          {userInfo && userInfo.isAdmin && <NavBar />}
         </Box>
         <Box className={classes.userBox}>
           <User />

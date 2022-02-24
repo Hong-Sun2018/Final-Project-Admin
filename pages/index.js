@@ -2,6 +2,8 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { Box } from '@mui/material';
 import { memo } from 'react';
+import PageContainer from '../Components/PageContainer';
+import HomeSignin from '../Views/HomeView/HomeSignIn';
 
 const Home = () => {
   return (
@@ -12,15 +14,11 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main >
-        <h1 >
-          Final Project Admin Pannel
-        </h1>
-      </main>
-
-      <footer>
-        
-      </footer>
+      <Box>
+        <PageContainer pageTitle={'Admin Sign In'}>
+          <HomeSignin />
+        </PageContainer>
+      </Box>
     </div>
   )
 }
