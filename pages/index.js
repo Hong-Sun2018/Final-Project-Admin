@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Box } from '@mui/material';
 import { memo } from 'react';
 import PageContainer from '../Components/PageContainer';
-import HomeSignin from '../Views/HomeView/HomeSignIn';
+import HomeSignin from '../Views/HomeView/HomeSignin';
 
 const Home = () => {
   return (
