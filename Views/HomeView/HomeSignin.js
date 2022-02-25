@@ -78,7 +78,7 @@ const HomeSignin = () => {
     };
 
     // console.log(reqBody);
-    axios.post(url, reqBody)
+    axios.post(url, reqBody, {withCredentials:true})
       .then((res) => {
         if(res.data){
           console.log(res.data);
@@ -87,7 +87,7 @@ const HomeSignin = () => {
         }
       })
       .catch((error) => {
-        if (error.response.status == 401){
+        if (error.response && error.response.status == 401){
           dispatch(setDialogMsg('Incorrect username or password.'));
           dispatch(openDialog());
           console.log(error.response);
