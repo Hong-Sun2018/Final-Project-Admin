@@ -61,7 +61,7 @@ const AddProductView = () => {
   const postCategory = (url, body) => {
     console.log(url);
     console.log(body);
-    axios.post(url, body).then((res) => {
+    axios.post(url, body, {withCredentials: true}).then((res) => {
       dispatch(setDialogMsg('New category created'));
       dispatch(openDialog);
   

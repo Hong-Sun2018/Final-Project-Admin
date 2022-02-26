@@ -1,4 +1,4 @@
-const HOST_NAME = 'https://api.h0n9.com';
+const HOST_NAME = 'http://localhost:5033';
 
 const API_PATH = {
   SignIn:'/user/signin-admin',
