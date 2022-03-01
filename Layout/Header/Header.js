@@ -45,7 +45,7 @@ const useStyles = makeStyles({
   logo: {
     width: '100px',
     height: '50px',
-    backgroundImage: 'url(/images/demo-logo.png)',
+    backgroundImage: 'url(/images/admin-logo.png)',
     backgroundSize: 'contain',
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',
