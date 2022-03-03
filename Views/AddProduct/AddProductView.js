@@ -7,6 +7,7 @@ import API from "../../Constants/API";
 import axios from "axios";
 import { setDialogMsg } from "../../Redux/Reducer/DialogReducer";
 import { setUserInfo } from "../../Redux/Reducer/UserInfoReducer";
+import FormData from 'form-data'
 
 const useStyles = makeStyles(
   {
@@ -38,6 +39,7 @@ const useStyles = makeStyles(
     newCategoryBox: {
       width: '100%',
       marginTop: '10px',
+      marginBottom: '12px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-end',
@@ -49,7 +51,7 @@ const useStyles = makeStyles(
 const AddProductView = () => {
   
   ////////////////////////////////// States & Hooks ///////////////////////////
-  const classes = useStyles();
+
   const [category1, setCategory1] = useState({categoryName: ''});
   const [category2, setCategory2] = useState({categoryName: ''});
   const [category3, setCategory3] = useState({categoryName: ''});
@@ -61,8 +63,71 @@ const AddProductView = () => {
   const [categoryName3, setCategoryName3] = useState('');
   const [disableCate2, setDisableCate2] = useState(true);
   const [disableCate3, setDisableCate3] = useState(true);
-  const dispatch = useDispatch();
 
+  const [prodName, setProdName] = useState('');
+  const [prodDesc, setProdDesc] = useState('');
+  const [file1, setFile1] = useState();
+  const [file2, setFile2] = useState();
+  const [file3, setFile3] = useState();
+
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  
+  ///////////////////////////////////// Event handler ////////////////////////////////////////
+  
+  const changeCate1 = (event) => {
+    setCategory1(categoryList1.find(c => c.categoryName == event.target.value));
+    setDisableCate2(false);
+    setDisableCate3(true);
+    setCategory2({});
+    setCategory3({});
+  }
+  const changeCate2 = (event) => {
+    setCategory2(categoryList2.find(c => c.categoryName == event.target.value));
+    setDisableCate3(false);
+    setCategory3({});
+  }
+  const changeCate3 = (event) => {
+    console.log("cate 3 sellected")
+    setCategory3(categoryList3.find(c => c.categoryName == event.target.value))
+  }
+
+  const changeCateName1 = (event)=>{
+    setCategoryName1(event.target.value);
+  }
+  const changeCateName2 = (event)=>{
+    setCategoryName2(event.target.value);
+  }
+  const changeCateName3 = (event)=>{
+    console.log("categoryname3 changed!!!!!!!!!")
+    setCategoryName3(event.target.value);
+    console.log(categoryName3);
+  }
+
+  const changeFile1 = (event) => {
+    setFile1(event.target.files[0]);
+  } 
+  const changeFile2 = (event) => {
+    setFile2(event.target.files[0]);
+  }
+  const changeFile3 = (event) => {
+    setFile3(event.target.files[0]);
+  }
+
+  const changeProdName = (event) => {
+    setProdName(event.target.value);
+    console.log('change prod name');
+  }
+  const changeProdDesc = (event) => {
+    setProdDesc(event.target.value)
+    console.log("change prod desc")
+  }
+
+  useEffect(() => {
+    console.log(file1);
+    console.log(file2);
+    console.log(file3);
+  }, [file1, file2, file3]);
 
   //////////////////////////////// Get Category List ////////////////////////////////////
 
@@ -101,37 +166,6 @@ const AddProductView = () => {
       getCategories(urlGetCateList, category2.categoryID, setCategoryList3);
     }
   }, [category2]);
-
-  ///////////////////////////////////// Event handler ////////////////////////////////////////
-  
-  const changeCate1 = (event) => {
-    setCategory1(categoryList1.find(c => c.categoryName == event.target.value));
-    setDisableCate2(false);
-    setDisableCate3(true);
-    setCategory2({});
-    setCategory3({});
-  }
-  const changeCate2 = (event) => {
-    setCategory2(categoryList2.find(c => c.categoryName == event.target.value));
-    setDisableCate3(false);
-    setCategory3({});
-  }
-  const changeCate3 = (event) => {
-    console.log("cate 3 sellected")
-    setCategory3(categoryList3.find(c => c.categoryName == event.target.value))
-  }
-  const changeCateName1 = (event)=>{
-    setCategoryName1(event.target.value);
-  }
-  const changeCateName2 = (event)=>{
-    setCategoryName2(event.target.value);
-  }
-  const changeCateName3 = (event)=>{
-    console.log("categoryname3 changed!!!!!!!!!")
-    setCategoryName3(event.target.value);
-    console.log(categoryName3);
-  }
-
 
 
   //////////////////////////////// Create Category ////////////////////////////////////////////////
@@ -208,7 +242,55 @@ const AddProductView = () => {
     setCategoryName3('');
   }
 
+  ///////////////////////////////////////////////// Post Product ///////////////////////////////////////////////////////
+  
+  function getProdCate() {
+    if (category3 && category3.categoryID){
+      return category3.categoryID;
+    }else if (category2 && category2.categoryID) {
+      return category2.categoryID;
+    }else if (category1 && category1.categoryID){
+      return category1.categoryID;
+    } else {
+      return undefined;
+    }
+  }
 
+  
+  const formData = new FormData()
+
+  const httpOption = {
+    withCredentials: true,
+    headers: formData.getHeaders
+  }
+
+  const urlCreateProd = API('CreateProduct');
+
+  const handleCreate = () => {
+    formData.append('ProductName', prodName);
+    formData.append('ProductDesc', prodDesc);
+    formData.append('CategoryID', getProdCate());
+    formData.append('FormFile1', file1);
+    formData.append('FormFile2', file2);
+    formData.append('FormFile3', file3);
+    if (prodName && prodName.length>0 && getProdCate() ){
+      axios.post(urlCreateProd, formData, httpOption).then((res) => {
+        if (res && res.status == 201) {
+          dispatch(setDialogMsg('Product created.'));
+          setCategory1({categoryName: ''});
+          setCategory2({categoryName: ''});
+          setCategory3({categoryName: ''});
+          setProdName('');
+          setProdDesc('');
+        }
+      })
+    }
+    else {
+      dispatch(setDialogMsg('Product name and category is required. '));
+    }
+  }
+
+ ////////////////////////////////////////////////////// Render //////////////////////////////////
   return (
     <Box className={classes.root}>
       <Box className={classes.container}>
@@ -216,12 +298,12 @@ const AddProductView = () => {
         <Typography variant={'p'} >
           Product name:
         </Typography>
-        <TextField className={classes.prodName} label={'Product name'} id={'prodName'} variant={'outlined'} fullWidth size={'small'}/>
+        <TextField className={classes.prodName} label={'Product name'} id={'prodName'} variant={'outlined'} fullWidth size={'small'} onChange={changeProdName} value={prodName} />
 
         <Typography variant={'p'} >
           Product description:
         </Typography>
-        <TextareaAutosize className={classes.textArea} placeholder={'Empty'} maxRows={10} minRows={10}/>
+        <TextareaAutosize className={classes.textArea} placeholder={'Empty'} maxRows={10} minRows={10} onChange={changeProdDesc} value={prodDesc}/>
 
         <Typography variant={'p'} >
           Product category:
@@ -279,6 +361,29 @@ const AddProductView = () => {
             </Box>
           </Grid>
         </Grid>
+
+        <Typography variant={'p'} >
+          Product pictures:
+        </Typography>
+        <Grid className={classes.selectContainer} container alignItems={'center'} justifyContent={'space-between'}>
+          {/*/////////////////////////  Picture 1 ////////////////////////////////////////////*/}
+          <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <input type="file" accept="image/*" onChange={changeFile1} />
+          </Grid>
+           {/*/////////////////////////  Picture 2 ////////////////////////////////////////////*/}
+          <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+          <input type="file" accept="image/*" onChange={changeFile2} />
+          </Grid>
+           {/*/////////////////////////  Picture 3 ////////////////////////////////////////////*/}
+          <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+          <input type="file" accept="image/*" onChange={changeFile3} />
+          </Grid>
+        </Grid>
+        <Box > 
+          <Button onClick={handleCreate}>
+            Create Product
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

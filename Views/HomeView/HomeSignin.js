@@ -78,7 +78,7 @@ const HomeSignin = () => {
     axios.post(url, reqBody, {withCredentials:true})
       .then((res) => {
         if(res.data){
-          console.log(res.data);
+          dispatch(setUserInfo(res.data));
           router.push('/');
         }
       })

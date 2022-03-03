@@ -5,6 +5,7 @@ const API_PATH = {
   TokenLoginAdmin: '/user/token-login-admin',
   CreateCategory: '/category/create-category',
   GetCategories: '/category',
+  CreateProduct: '/product',
 };
 
 const API = (key) => {
