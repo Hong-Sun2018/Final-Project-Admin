@@ -1,10 +1,11 @@
-import { Box, IconButton, Grid, InputBase, Input } from '@mui/material';
+import { Box, IconButton, Grid, InputBase, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { memo, useEffect, useState } from 'react';
 import API from '../../Constants/API';
 import axios from 'axios';
 import { makeStyles } from '@mui/styles';
 import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
+import ProductCard from './ProductCard/ProductCard';
 
 const useStyles = makeStyles({
   root: {
@@ -14,8 +15,18 @@ const useStyles = makeStyles({
     alignItems: 'center',
     // backgroundColor: 'yellow'
   },
+  subTitle: {
+    display: 'block',
+    width: '100%',
+    textAlign: 'center',
+    marginBottom: '30px',
+  },
   searchContainer: {
-    width: '50%',
+    width: '70%',
+    boxShadow: '2px 2px 5px #cccccc',
+    border: 'solid 1px',
+    borderColor: '#cccccc',
+    padding: '60px',
     // backgroundColor: 'blue'
   },
   selectContainer: {
@@ -31,9 +42,20 @@ const useStyles = makeStyles({
     flexDirection: 'row',
     marginTop: '12px',
     border: 'solid 1px',
-    borderRadius:'5px',
+    borderRadius: '5px',
     paddingLeft: '5px',
+  },
+  listContainer: {
+    width: '70%',
+    boxShadow: '2px 2px 5px #cccccc',
+    padding: '60px',
+    marginTop: '40px',
+    minHeight: '500px',
+    // border: 'solid 1px',
+    borderColor: '#cccccc',
+
   }
+
 });
 
 const getChildrenCate = (parentID, setCateList) => {
@@ -99,15 +121,15 @@ const ProductList = () => {
 
   function getCategoryID() {
     const retVal = {};
-    if (category3 && category3.categoryID){
+    if (category3 && category3.categoryID) {
       retVal = category3.categoryID;
-    } 
+    }
     else if (category2 && category2.categoryID) {
       retVal = category2.categoryID;
-    } 
-    else if (category1 && category1.categoryID ){
+    }
+    else if (category1 && category1.categoryID) {
       retVal = category1.categoryID
-    } 
+    }
     else {
       retVal = 0;
     }
@@ -115,9 +137,9 @@ const ProductList = () => {
   }
 
   function getKeyWords() {
-    if (!keyWords ||  keyWords.length == 0){
+    if (!keyWords || keyWords.length == 0) {
       return 'UndefinedKeyWord';
-    } 
+    }
     else {
       return keyWords;
     }
@@ -153,7 +175,9 @@ const ProductList = () => {
   ///////////////////////////////////////////////// Render //////////////////////////////////////////////////////////
   return (
     <Box className={classes.root}>
+      {/*/////////////////////////////////////////// Search bar /////////////////////////////////////////////////////// */}
       <Box className={classes.searchContainer}>
+        <Typography className={classes.subTitle} variant={'h6'}>Search Product</Typography>
         <Grid className={classes.selectContainer} container alignItems={'center'} justifyContent={'space-between'}>
           {/*///////////////////////////////////////////////  Cate 1 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
@@ -197,11 +221,25 @@ const ProductList = () => {
         </Grid>
         <Box className={classes.searchBar}>
 
-          <InputBase fullWidth placeholder={'Searching Key Words'} onChange={changeKeyWorks} onKeyDown={keyDown} value={keyWords}/>
+          <InputBase fullWidth placeholder={'Searching Key Words'} onChange={changeKeyWorks} onKeyDown={keyDown} value={keyWords} />
           <IconButton onClick={clickSearch}>
             <SearchIcon />
           </IconButton>
         </Box>
+      </Box>
+
+      {/* ////////////////////////////// Product List Display /////////////////////////////////////// */}
+      <Box className={classes.listContainer}>
+        <Grid container spacing={2}>
+          <Typography className={classes.subTitle} variant={'h6'}>Product List</Typography>
+          {prodList && prodList.length > 0 && prodList.map((item, index) => {
+            return (
+              <Grid item key={index} md={12} sm={6} xs={12}>
+                <ProductCard product={item} key={index} />
+              </Grid>
+            );
+          })}
+        </Grid>
       </Box>
     </Box>
   )

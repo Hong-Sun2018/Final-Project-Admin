@@ -78,6 +78,7 @@ const AddProductView = () => {
 
   const [prodName, setProdName] = useState('');
   const [prodPrice, setProdPrice] = useState(0);
+  const [prodStock, setProdStock] = useState(0);
   const [prodDesc, setProdDesc] = useState('');
   const [file1, setFile1] = useState();
   const [file2, setFile2] = useState();
@@ -133,6 +134,9 @@ const AddProductView = () => {
   }
   const changeProdPrice = (event) => {
     setProdPrice(event.target.value);
+  }
+  const changeProdStock = (event) => {
+    setProdStock(event.target.value);
   }
   const changeProdDesc = (event) => {
     setProdDesc(event.target.value)
@@ -278,7 +282,8 @@ const AddProductView = () => {
 
   const handleCreate = () => {
     formData.append('ProductName', prodName);
-    formData.append('ProductPrice', prodPrice)
+    formData.append('ProductPrice', prodPrice);
+    formData.append('ProductStock', prodStock);
     formData.append('ProductDesc', prodDesc);
     formData.append('CategoryID', getProdCate());
     formData.append('FormFile1', file1);
@@ -309,13 +314,16 @@ const AddProductView = () => {
         <Typography variant={'p'} className={classes.inputTitle}>
           Product name:
         </Typography>
-        <TextField className={classes.prodName} label={'Product name'} id={'prodName'} variant={'outlined'} fullWidth size={'small'} onChange={changeProdName} value={prodName} />
+        <TextField className={classes.prodName} label={'Product name'} variant={'outlined'} fullWidth size={'small'} onChange={changeProdName} value={prodName} />
         
         <Typography variant={'p'} className={classes.inputTitle}>
           Product price:
         </Typography>
-        <TextField className={classes.prodName} label={'Product price'} id={'prodName'} variant={'outlined'} fullWidth size={'small'} onChange={changeProdPrice} value={prodPrice} />
-        
+        <TextField className={classes.prodName} label={'Product price'} variant={'outlined'} fullWidth size={'small'} onChange={changeProdPrice} value={prodPrice} />
+        <Typography variant={'p'} className={classes.inputTitle}>
+          Product stock::
+        </Typography>
+        <TextField className={classes.prodName} label={'Product stock'} variant={'outlined'} fullWidth size={'small'} onChange={changeProdStock} value={prodStock} />
         <Typography variant={'p'} className={classes.inputTitle}>
           Product description:
         </Typography>
