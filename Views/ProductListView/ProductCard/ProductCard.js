@@ -10,8 +10,8 @@ const useStyles = makeStyles({
     boxShadow: '2px 2px 5px #cccccc'
   },
   imgContainer: {
-    width: '100px',
-    height: '70px',
+    width: '150px',
+    height: '100px',
     border: '1px',
     borderStyle: 'solid',
     borderColor: 'gray',
@@ -22,8 +22,8 @@ const useStyles = makeStyles({
     marginRight: 'auto'
   },
   image: {
-    maxHeight: '100px',
-    maxWidth: '70px',
+    maxHeight: '150px',
+    maxWidth: '100px',
   },
 });
 

@@ -1,4 +1,4 @@
-import { Box, IconButton, Grid, InputBase, Typography } from '@mui/material';
+import { Box, IconButton, Grid, InputBase, Typography, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { memo, useEffect, useState } from 'react';
 import API from '../../Constants/API';
@@ -6,6 +6,7 @@ import axios from 'axios';
 import { makeStyles } from '@mui/styles';
 import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
 import ProductCard from './ProductCard/ProductCard';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles({
   root: {
@@ -53,7 +54,6 @@ const useStyles = makeStyles({
     minHeight: '500px',
     // border: 'solid 1px',
     borderColor: '#cccccc',
-
   }
 
 });
@@ -92,6 +92,7 @@ const ProductList = () => {
     if (category1 && category1.categoryID) {
       getChildrenCate(category1.categoryID, setCateList2);
     }
+    getProducts();
   }, [category1]);
 
   useEffect(() => {
@@ -99,6 +100,11 @@ const ProductList = () => {
       getChildrenCate(category2.categoryID, setCateList3);
     }
   }, [category2]);
+
+  const router = useRouter();
+  const routeNewProduct = () => {
+    router.push('/add-product');
+  }
 
   const changeCate1 = (event) => {
     setCategory1(cateList1.find(c => c.categoryName == event.target.value));
@@ -232,6 +238,9 @@ const ProductList = () => {
       <Box className={classes.listContainer}>
         <Grid container spacing={2}>
           <Typography className={classes.subTitle} variant={'h6'}>Product List</Typography>
+          <Box sx={{width: '100%', display: 'flex', justifyContent:'right'}}>
+            <Button variant={'contained'} size={'small'} onClick={routeNewProduct}>New Product</Button> 
+          </Box>
           {prodList && prodList.length > 0 && prodList.map((item, index) => {
             return (
               <Grid item key={index} md={12} sm={6} xs={12}>
