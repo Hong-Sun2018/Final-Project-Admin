@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useSelector, useDispatch } from 'react-redux';
-import { closeDialog } from '../Redux/Reducer/DialogOpenReducer';
+import { closeDialog } from '../Redux/Reducer/DialogReducer';
 
 const useStyles = makeStyles(
   {
@@ -21,8 +21,8 @@ const useStyles = makeStyles(
 const DialogBox = () => {
 
   const classes = useStyles();
-  const isOpen = useSelector((state) => state.isDialogOpen.value);
-  const message = useSelector((state) => state.dialogMessage.value);
+  const isOpen = useSelector((state) => state.dialog.value.isOpen);
+  const message = useSelector((state) => state.dialog.value.dialogMsg);
   const dispatch = useDispatch();
 
   const handleClose = () => {

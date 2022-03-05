@@ -16,4 +16,4 @@ const Layout = ({children}) => {
   );
 }
 
-export default memo(Layout);
+export default Layout;
