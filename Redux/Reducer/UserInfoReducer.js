@@ -6,7 +6,8 @@ export const userInfoSlice = createSlice(
     initialState: {
       value: {
         userName: '',
-        userID: ''
+        userID: '',
+        isAdmin: false,
       }
     },
     reducers: {

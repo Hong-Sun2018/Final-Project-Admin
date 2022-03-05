@@ -1,4 +1,4 @@
-import { Hidden, Link } from '@mui/material';
+import { Box, Link } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(
@@ -7,25 +7,48 @@ const useStyles = makeStyles(
       width: '100%',
       display: 'flex',
       flexDirection: 'row',
-      alignItems:'center',
-      justifyContent:'right',
+      alignItems: 'center',
+      justifyContent: 'right',
+    },
+    links: {
+      marginRight: '30px',
     }
   }
 );
 
-
+const navLinks = [
+  {
+    title: 'Products',
+    link: '/products'
+  },
+  {
+    title: 'Orders',
+    link:'/orders'
+  },
+  {
+    title: 'Users',
+    link:'/users'
+  },
+];
 
 const NavBar = () => {
 
   const classes = useStyles();
 
   return (
-    <Hidden smDown>
-      <Box className={classes.root}>
 
-      </Box>
-    </Hidden>
+    <Box className={classes.root}>
+      {navLinks.map((item, index) => {
+        return(
+          <Box key={index} className={classes.links}>
+            <Link key={index} href={item.link}>
+              {item.title}
+            </Link>
+          </Box>
+        );
+      })}
+    </Box>
   );
-
-
 }
+
+export default NavBar;
