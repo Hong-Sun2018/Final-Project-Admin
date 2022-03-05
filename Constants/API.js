@@ -6,6 +6,7 @@ const API_PATH = {
   CreateCategory: '/category/create-category',
   GetCategories: '/category',
   Product: '/product',
+  GetCategoryPath: '/category/get-cate-path'
 
 };
 
