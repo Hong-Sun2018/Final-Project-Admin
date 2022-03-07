@@ -10,7 +10,7 @@ const EditProduct = () => {
 
   return (
     <PageContainer>
-      <EditProductView productID={productID} />
+      { productID != undefined && <EditProductView productID={productID} />}
     </PageContainer>
   );
 }

@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     marginBottom: '30px',
   },
   searchContainer: {
-    width: '70%',
+    width: '85%',
     boxShadow: '2px 2px 5px #cccccc',
     border: 'solid 1px',
     borderColor: '#cccccc',
@@ -47,7 +47,7 @@ const useStyles = makeStyles({
     paddingLeft: '5px',
   },
   listContainer: {
-    width: '70%',
+    width: '85%',
     boxShadow: '2px 2px 5px #cccccc',
     padding: '60px',
     marginTop: '40px',
@@ -236,7 +236,7 @@ const ProductList = () => {
 
       {/* ////////////////////////////// Product List Display /////////////////////////////////////// */}
       <Box className={classes.listContainer}>
-        <Grid container spacing={2}>
+        <Grid container spacing={4}>
           <Typography className={classes.subTitle} variant={'h6'}>Product List</Typography>
           <Box sx={{width: '100%', display: 'flex', justifyContent:'right'}}>
             <Button variant={'contained'} size={'small'} onClick={routeNewProduct}>New Product</Button> 
