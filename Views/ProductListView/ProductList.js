@@ -7,6 +7,7 @@ import { makeStyles } from '@mui/styles';
 import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
 import ProductCard from './ProductCard/ProductCard';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
     marginBottom: '30px',
   },
   searchContainer: {
-    width: '85%',
+    width: '70%',
     boxShadow: '2px 2px 5px #cccccc',
     border: 'solid 1px',
     borderColor: '#cccccc',
@@ -55,20 +56,7 @@ const useStyles = makeStyles({
     // border: 'solid 1px',
     borderColor: '#cccccc',
   }
-
 });
-
-const getChildrenCate = (parentID, setCateList) => {
-  const url = `${API('GetCategories')}/${parentID}`;
-  axios.get(url).then((res) => {
-    // console.log(url);
-    if (res && res.data) {
-      setCateList(res.data);
-    }
-  }).catch((err) => {
-    console.log(err);
-  });
-}
 
 const ProductList = () => {
 
@@ -83,23 +71,7 @@ const ProductList = () => {
   const [disableCate3, setDisableCate3] = useState(true);
   const [keyWords, setKeyWords] = useState('');
   const [prodList, setProdList] = useState({});
-
-  useEffect(() => {
-    getChildrenCate(-1, setCateList1);
-  }, []);
-
-  useEffect(() => {
-    if (category1 && category1.categoryID) {
-      getChildrenCate(category1.categoryID, setCateList2);
-    }
-    getProducts();
-  }, [category1]);
-
-  useEffect(() => {
-    if (category2 && category2.categoryID) {
-      getChildrenCate(category2.categoryID, setCateList3);
-    }
-  }, [category2]);
+  const dialogMsg = useSelector(state => state.dialog.value.dialogMsg);
 
   const router = useRouter();
   const routeNewProduct = () => {
@@ -125,23 +97,7 @@ const ProductList = () => {
     setKeyWords(event.target.value);
   }
 
-  function getCategoryID() {
-    const retVal = {};
-    if (category3 && category3.categoryID) {
-      retVal = category3.categoryID;
-    }
-    else if (category2 && category2.categoryID) {
-      retVal = category2.categoryID;
-    }
-    else if (category1 && category1.categoryID) {
-      retVal = category1.categoryID
-    }
-    else {
-      retVal = 0;
-    }
-    return retVal;
-  }
-
+  
   function getKeyWords() {
     if (!keyWords || keyWords.length == 0) {
       return 'UndefinedKeyWord';
@@ -164,6 +120,23 @@ const ProductList = () => {
 
   //////////////////////////////////////////////// Get Product List /////////////////////////////////////////////////
 
+  const getCategoryID = () => {
+    const retVal = {};
+    if (category3 && category3.categoryID) {
+      retVal = category3.categoryID;
+    }
+    else if (category2 && category2.categoryID) {
+      retVal = category2.categoryID;
+    }
+    else if (category1 && category1.categoryID) {
+      retVal = category1.categoryID
+    }
+    else {
+      retVal = 0;
+    }
+    return retVal;
+  }
+
   const getProducts = () => {
     const url = `${API('Product')}/${getCategoryID()}/${getKeyWords()}`;
     console.log(url);
@@ -177,6 +150,39 @@ const ProductList = () => {
     })
   }
 
+  useEffect(() => {
+    getProducts()
+  }, [category1, category2, category3, keyWords, dialogMsg])
+
+/////////////////////////////////////////////////// Get Category List ////////////////////////////////////////////////////////////////
+  
+const getChildrenCate = (parentID, setCateList) => {
+  const url = `${API('GetCategories')}/${parentID}`;
+  axios.get(url).then((res) => {
+    // console.log(url);
+    if (res && res.data) {
+      setCateList(res.data);
+    }
+  }).catch((err) => {
+    console.log(err);
+  });
+}
+
+  useEffect(() => {
+    getChildrenCate(-1, setCateList1);
+  }, []);
+
+  useEffect(() => {
+    if (category1 && category1.categoryID) {
+      getChildrenCate(category1.categoryID, setCateList2);
+    }
+  }, [category1]);
+
+  useEffect(() => {
+    if (category2 && category2.categoryID) {
+      getChildrenCate(category2.categoryID, setCateList3);
+    }
+  }, [category2]);
 
   ///////////////////////////////////////////////// Render //////////////////////////////////////////////////////////
   return (

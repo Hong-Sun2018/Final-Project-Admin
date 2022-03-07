@@ -1,7 +1,10 @@
-import Image from "next/image";
 import { Box, Typography, Button, Grid } from '@mui/material';
 import { makeStyles } from "@mui/styles";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
+import API from '../../../Constants/API';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setDialogMsg } from '../../../Redux/Reducer/DialogReducer';
 
 const useStyles = makeStyles({
   root: {
@@ -40,11 +43,28 @@ const ProductCard = ({ product }) => {
 
   const classes = useStyles();
   const router = useRouter();
+  const dispatch = useDispatch();
   const imgSrc = `data:${product.fileType1};base64,${product.file1}`;
   // console.log(imgSrc);
 
   const clickEdit = () => {
     router.push(`/edit-product/${product.productID}`)
+  }
+
+  const clickDelete = () => {
+    const url = `${API('Product')}/${product.productID}`;
+    axios.delete(url, {withCredentials: true}).then(res => {
+      if (res) {
+        dispatch(setDialogMsg(`Product deleted. ID: ${product.productID}`))
+      }
+    }).catch(error => {
+      if (error.status == 404){
+        dispatch(setDialogMsg('Product not found.'));
+      } else {
+        dispatch(setDialogMsg('Unknow error.'))
+      }
+    })
+
   }
 
   return (
@@ -70,7 +90,7 @@ const ProductCard = ({ product }) => {
           <Box className={classes.btnContainer}>
             <Button className={classes.btn} variant={'contained'} size={'small'}>View</Button>
             <Button className={classes.btn} onClick={clickEdit} variant={'outlined'} size={'small'}>Edit</Button>
-            <Button className={classes.btn} variant={'outlined'} color={'error'} size={'small'}>Delete</Button>
+            <Button className={classes.btn} onClick={clickDelete} variant={'outlined'} color={'error'} size={'small'}>Delete</Button>
           </Box>
         </Grid>
       </Grid>
