@@ -64,7 +64,10 @@ const ProductCard = ({ product }) => {
         dispatch(setDialogMsg('Unknow error.'))
       }
     })
+  }
 
+  const clickViewDetail = () => {
+    router.push(`/product-detail/${product.productID}`);
   }
 
   return (
@@ -88,7 +91,7 @@ const ProductCard = ({ product }) => {
         </Grid>
         <Grid item md={4.5} sm={12} xs={12} textAlign={'center'}>
           <Box className={classes.btnContainer}>
-            <Button className={classes.btn} variant={'contained'} size={'small'}>View</Button>
+            <Button className={classes.btn} onClick={clickViewDetail} variant={'contained'} size={'small'}>View</Button>
             <Button className={classes.btn} onClick={clickEdit} variant={'outlined'} size={'small'}>Edit</Button>
             <Button className={classes.btn} onClick={clickDelete} variant={'outlined'} color={'error'} size={'small'}>Delete</Button>
           </Box>

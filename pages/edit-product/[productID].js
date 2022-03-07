@@ -9,7 +9,7 @@ const EditProduct = () => {
   // console.log(productID);
 
   return (
-    <PageContainer>
+    <PageContainer pageTitle={'Edit Product'}>
       { productID != undefined && <EditProductView productID={productID} />}
     </PageContainer>
   );
