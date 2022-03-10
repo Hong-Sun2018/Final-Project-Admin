@@ -11,7 +11,7 @@ const useStyles = makeStyles(
       justifyContent: 'right',
     },
     links: {
-      marginRight: '30px',
+      marginRight: '10px',
     }
   }
 );

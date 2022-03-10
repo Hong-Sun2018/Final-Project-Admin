@@ -97,21 +97,12 @@ const ProductList = () => {
     setKeyWords(event.target.value);
   }
 
-  
-  function getKeyWords() {
-    if (!keyWords || keyWords.length == 0) {
-      return 'UndefinedKeyWord';
-    }
-    else {
-      return keyWords;
-    }
-  }
   const clickSearch = () => {
     getProducts();
   }
 
   const keyDown = (event) => {
-    // console.log(event.keyCode);
+    console.log(event.keyCode);
     if (event.keyCode == 13) {
       getProducts;
     }
@@ -139,9 +130,9 @@ const ProductList = () => {
 
   const getProducts = () => {
     const url = `${API('Product')}/${getCategoryID()}/${getKeyWords()}`;
-    console.log(url);
+    // console.log(url);
     axios.get(url).then((res) => {
-      console.log(res.data)
+      // console.log(res.data)
       if (res && res.data) {
         setProdList(res.data);
       }
@@ -150,9 +141,23 @@ const ProductList = () => {
     })
   }
 
+  function getKeyWords() {
+    if (!keyWords || keyWords.length == 0) {
+      return 'UndefinedKeyWord';
+    }
+    else {
+      const keyWordsArr = keyWords.split(' ');
+      const retStr = '';
+      for (const word of keyWordsArr){
+        retStr = `${retStr}_${word}`
+      }
+      return retStr;
+    }
+  }
+
   useEffect(() => {
     getProducts()
-  }, [category1, category2, category3, keyWords, dialogMsg])
+  }, [dialogMsg])
 
 /////////////////////////////////////////////////// Get Category List ////////////////////////////////////////////////////////////////
   
@@ -233,7 +238,7 @@ const getChildrenCate = (parentID, setCateList) => {
         </Grid>
         <Box className={classes.searchBar}>
 
-          <InputBase fullWidth placeholder={'Searching Key Words'} onChange={changeKeyWorks} onKeyDown={keyDown} value={keyWords} />
+          <InputBase fullWidth placeholder={'Searching Key Words'} onChange={changeKeyWorks} onKeyPress={keyDown} value={keyWords} />
           <IconButton onClick={clickSearch}>
             <SearchIcon />
           </IconButton>
