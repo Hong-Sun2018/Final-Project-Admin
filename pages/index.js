@@ -4,8 +4,13 @@ import { Box } from '@mui/material';
 import { memo } from 'react';
 import PageContainer from '../Components/PageContainer';
 import HomeSignin from '../Views/HomeView/HomeSignin';
+import HomeStatistics from '../Views/HomeView/HomeStatistics';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
+
+  const { userName, userID} = useSelector(state => state.userInfo.value);
+
   return (
     <div >
       <Head>
@@ -15,8 +20,8 @@ const Home = () => {
       </Head>
 
       <Box>
-        <PageContainer pageTitle={'Admin Sign In'}>
-          <HomeSignin />
+        <PageContainer pageTitle={'Admin Pannel'}>
+          {userName == '' ? <HomeSignin /> : <HomeStatistics /> }
         </PageContainer>
       </Box>
     </div>

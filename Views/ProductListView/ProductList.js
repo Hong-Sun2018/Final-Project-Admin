@@ -7,6 +7,7 @@ import { makeStyles } from '@mui/styles';
 import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
 import ProductCard from './ProductCard/ProductCard';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
   root: {
@@ -47,7 +48,7 @@ const useStyles = makeStyles({
     paddingLeft: '5px',
   },
   listContainer: {
-    width: '70%',
+    width: '85%',
     boxShadow: '2px 2px 5px #cccccc',
     padding: '60px',
     marginTop: '40px',
@@ -55,20 +56,7 @@ const useStyles = makeStyles({
     // border: 'solid 1px',
     borderColor: '#cccccc',
   }
-
 });
-
-const getChildrenCate = (parentID, setCateList) => {
-  const url = `${API('GetCategories')}/${parentID}`;
-  axios.get(url).then((res) => {
-    // console.log(url);
-    if (res && res.data) {
-      setCateList(res.data);
-    }
-  }).catch((err) => {
-    console.log(err);
-  });
-}
 
 const ProductList = () => {
 
@@ -83,23 +71,7 @@ const ProductList = () => {
   const [disableCate3, setDisableCate3] = useState(true);
   const [keyWords, setKeyWords] = useState('');
   const [prodList, setProdList] = useState({});
-
-  useEffect(() => {
-    getChildrenCate(-1, setCateList1);
-  }, []);
-
-  useEffect(() => {
-    if (category1 && category1.categoryID) {
-      getChildrenCate(category1.categoryID, setCateList2);
-    }
-    getProducts();
-  }, [category1]);
-
-  useEffect(() => {
-    if (category2 && category2.categoryID) {
-      getChildrenCate(category2.categoryID, setCateList3);
-    }
-  }, [category2]);
+  const dialogMsg = useSelector(state => state.dialog.value.dialogMsg);
 
   const router = useRouter();
   const routeNewProduct = () => {
@@ -125,7 +97,21 @@ const ProductList = () => {
     setKeyWords(event.target.value);
   }
 
-  function getCategoryID() {
+  const clickSearch = () => {
+    getProducts();
+  }
+
+  const keyDown = (event) => {
+    console.log(event.keyCode);
+    if (event.keyCode == 13) {
+      getProducts;
+    }
+  }
+
+
+  //////////////////////////////////////////////// Get Product List /////////////////////////////////////////////////
+
+  const getCategoryID = () => {
     const retVal = {};
     if (category3 && category3.categoryID) {
       retVal = category3.categoryID;
@@ -142,33 +128,11 @@ const ProductList = () => {
     return retVal;
   }
 
-  function getKeyWords() {
-    if (!keyWords || keyWords.length == 0) {
-      return 'UndefinedKeyWord';
-    }
-    else {
-      return keyWords;
-    }
-  }
-  const clickSearch = () => {
-    getProducts();
-  }
-
-  const keyDown = (event) => {
-    // console.log(event.keyCode);
-    if (event.keyCode == 13) {
-      getProducts;
-    }
-  }
-
-
-  //////////////////////////////////////////////// Get Product List /////////////////////////////////////////////////
-
   const getProducts = () => {
     const url = `${API('Product')}/${getCategoryID()}/${getKeyWords()}`;
-    console.log(url);
+    // console.log(url);
     axios.get(url).then((res) => {
-      console.log(res.data)
+      // console.log(res.data)
       if (res && res.data) {
         setProdList(res.data);
       }
@@ -177,6 +141,53 @@ const ProductList = () => {
     })
   }
 
+  function getKeyWords() {
+    if (!keyWords || keyWords.length == 0) {
+      return 'UndefinedKeyWord';
+    }
+    else {
+      const keyWordsArr = keyWords.split(' ');
+      const retStr = '';
+      for (const word of keyWordsArr){
+        retStr = `${retStr}_${word}`
+      }
+      return retStr;
+    }
+  }
+
+  useEffect(() => {
+    getProducts()
+  }, [dialogMsg])
+
+/////////////////////////////////////////////////// Get Category List ////////////////////////////////////////////////////////////////
+  
+const getChildrenCate = (parentID, setCateList) => {
+  const url = `${API('GetCategories')}/${parentID}`;
+  axios.get(url).then((res) => {
+    // console.log(url);
+    if (res && res.data) {
+      setCateList(res.data);
+    }
+  }).catch((err) => {
+    console.log(err);
+  });
+}
+
+  useEffect(() => {
+    getChildrenCate(-1, setCateList1);
+  }, []);
+
+  useEffect(() => {
+    if (category1 && category1.categoryID) {
+      getChildrenCate(category1.categoryID, setCateList2);
+    }
+  }, [category1]);
+
+  useEffect(() => {
+    if (category2 && category2.categoryID) {
+      getChildrenCate(category2.categoryID, setCateList3);
+    }
+  }, [category2]);
 
   ///////////////////////////////////////////////// Render //////////////////////////////////////////////////////////
   return (
@@ -227,7 +238,7 @@ const ProductList = () => {
         </Grid>
         <Box className={classes.searchBar}>
 
-          <InputBase fullWidth placeholder={'Searching Key Words'} onChange={changeKeyWorks} onKeyDown={keyDown} value={keyWords} />
+          <InputBase fullWidth placeholder={'Searching Key Words'} onChange={changeKeyWorks} onKeyPress={keyDown} value={keyWords} />
           <IconButton onClick={clickSearch}>
             <SearchIcon />
           </IconButton>
@@ -236,7 +247,7 @@ const ProductList = () => {
 
       {/* ////////////////////////////// Product List Display /////////////////////////////////////// */}
       <Box className={classes.listContainer}>
-        <Grid container spacing={2}>
+        <Grid container spacing={4}>
           <Typography className={classes.subTitle} variant={'h6'}>Product List</Typography>
           <Box sx={{width: '100%', display: 'flex', justifyContent:'right'}}>
             <Button variant={'contained'} size={'small'} onClick={routeNewProduct}>New Product</Button> 

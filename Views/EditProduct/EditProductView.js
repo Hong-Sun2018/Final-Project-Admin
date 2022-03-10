@@ -1,13 +1,14 @@
 import { makeStyles } from "@mui/styles";
-import { Box, Button, TextField, Typography, TextareaAutosize, Grid, Input} from '@mui/material';
+import { Box, Button, TextField, Typography, TextareaAutosize, Grid, Input } from '@mui/material';
 import { memo, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FormControl, MenuItem, InputLabel, Select } from '@mui/material'; 
+import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
 import API from "../../Constants/API";
 import axios from "axios";
 import { setDialogMsg } from "../../Redux/Reducer/DialogReducer";
 import { setUserInfo } from "../../Redux/Reducer/UserInfoReducer";
-import FormData from 'form-data'
+import FormData from 'form-data';
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles(
   {
@@ -16,7 +17,7 @@ const useStyles = makeStyles(
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent:'cennter'
+      justifyContent: 'cennter'
     },
     container: {
       width: '50%',
@@ -26,11 +27,11 @@ const useStyles = makeStyles(
       marginBottom: '10px',
       display: 'block'
     },
-    prodName : {
+    prodName: {
       marginBottom: '40px',
     },
     textArea: {
-      width: '99.5%', 
+      width: '99.5%',
       marginBottom: '40px',
     },
     selectContainer: {
@@ -55,19 +56,34 @@ const useStyles = makeStyles(
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'center',
-      marginTop: '50px' 
-    }
+      marginTop: '50px'
+    },
+    imgContainer: {
+      width: '225px',
+      height: '150px',
+      border: 'solid 1px',
+      borderColor: '#cccccc',
+      marginBottom: '12px',
+      marginTop: '15px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }, 
+    image: {
+      maxWidth: '225px',
+      maxHeight: '150px',
+    },
   }
 );
 
-const EditProductView = ({productID}) => {
-  
+const EditProductView = ({ productID }) => {
+
   ////////////////////////////////// define States & Hooks ///////////////////////////
   // console.log(productID);
 
-  const [category1, setCategory1] = useState({categoryName: ''});
-  const [category2, setCategory2] = useState({categoryName: ''});
-  const [category3, setCategory3] = useState({categoryName: ''});
+  const [category1, setCategory1] = useState({ categoryName: '' });
+  const [category2, setCategory2] = useState({ categoryName: '' });
+  const [category3, setCategory3] = useState({ categoryName: '' });
   const [categoryList1, setCategoryList1] = useState([]);
   const [categoryList2, setCategoryList2] = useState([]);
   const [categoryList3, setCategoryList3] = useState([]);
@@ -76,6 +92,7 @@ const EditProductView = ({productID}) => {
   const [categoryName3, setCategoryName3] = useState('');
   const [disableCate2, setDisableCate2] = useState(true);
   const [disableCate3, setDisableCate3] = useState(true);
+  const [catePath, setCatePath] = useState([]);
 
   const [prodName, setProdName] = useState('');
   const [prodPrice, setProdPrice] = useState(0);
@@ -84,12 +101,17 @@ const EditProductView = ({productID}) => {
   const [file1, setFile1] = useState();
   const [file2, setFile2] = useState();
   const [file3, setFile3] = useState();
+  const [img1, setImg1] = useState('');
+  const [img2, setImg2] = useState('');
+  const [img3, setImg3] = useState('');
+  const [prodCateID, setProdCateID] = useState(0);
 
+  const router = useRouter();
   const dispatch = useDispatch();
   const classes = useStyles();
-  
+
   ///////////////////////////////////// Event handler ////////////////////////////////////////
-  
+
   const changeCate1 = (event) => {
     setCategory1(categoryList1.find(c => c.categoryName == event.target.value));
     setDisableCate2(false);
@@ -107,26 +129,37 @@ const EditProductView = ({productID}) => {
     setCategory3(categoryList3.find(c => c.categoryName == event.target.value))
   }
 
-  const changeCateName1 = (event)=>{
+  const changeCateName1 = (event) => {
     setCategoryName1(event.target.value);
   }
-  const changeCateName2 = (event)=>{
+  const changeCateName2 = (event) => {
     setCategoryName2(event.target.value);
   }
-  const changeCateName3 = (event)=>{
+  const changeCateName3 = (event) => {
     // console.log("categoryname3 changed!!!!!!!!!")
     setCategoryName3(event.target.value);
     // console.log(categoryName3);
   }
 
   const changeFile1 = (event) => {
-    setFile1(event.target.files[0]);
+    if (event.target.files[0]){
+      setFile1(event.target.files[0]);
+      setImg1(URL.createObjectURL(event.target.files[0]));
+    }
   } 
   const changeFile2 = (event) => {
-    setFile2(event.target.files[0]);
+    if (event.target.files[0]){
+      setFile2(event.target.files[0]);
+      setImg2(URL.createObjectURL(event.target.files[0]))
+      // console.log(URL.createObjectURL(event.target.files[0]));
+    }
+    
   }
   const changeFile3 = (event) => {
-    setFile3(event.target.files[0]);
+    if (event.target.files[0]){
+      setFile3(event.target.files[0]);
+      setImg3(URL.createObjectURL(event.target.files[0]));
+    }
   }
 
   const changeProdName = (event) => {
@@ -149,27 +182,51 @@ const EditProductView = ({productID}) => {
   useEffect(() => {
     const url = `${API('Product')}/${productID}`;
     axios.get(url).then(res => {
-      if (res && res.data){
-        
+      if (res && res.data) {
+        setProdName(res.data.productName);
+        setProdDesc(res.data.productDesc);
+        setProdPrice(res.data.productPrice);
+        setProdStock(res.data.productStock);
+        setProdCateID(res.data.categoryID);
+        setImg1(`data:${res.data.fileType1};base64,${res.data.file1}`);
+        setImg2(`data:${res.data.fileType2};base64,${res.data.file2}`);
+        setImg3(`data:${res.data.fileType3};base64,${res.data.file3}`);
       }
+    }).catch(err => {
+      console.log(err);
     })
   }, []);
+
+  ////////////////////////////////// get pruduct categgory path /////////////////////////////
+  useEffect(() => {
+    if (prodCateID && prodCateID != 0){
+      const url = `${API('GetCategoryPath')}?categoryID=${prodCateID}`;
+      axios.get(url).then(res => {
+        if (res && res.data) {
+          //console.log(res.data);
+          setCatePath(res.data);
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    }
+  }, [prodCateID])
 
   //////////////////////////////// Get Category List ////////////////////////////////////
 
   const getCategories = (url, parentID, setCategoryList) => {
     const apiUrl = `${url}/${parentID}`;
     // console.log(apiUrl);
-    axios.get(apiUrl, {withCredentials: true}).then( res => {
-      if (res && res.data) { 
+    axios.get(apiUrl, { withCredentials: true }).then(res => {
+      if (res && res.data) {
         // console.log(res.data);
         setCategoryList(res.data);
         // console.log(categoryList1);
       }
-    }).catch( err => {
+    }).catch(err => {
       console.log(err);
     });
-  } 
+  }
 
   const urlGetCateList = API('GetCategories');
   // get level 1 category
@@ -179,7 +236,7 @@ const EditProductView = ({productID}) => {
 
   // if have level 1 get level 2 category
   const getList2 = useEffect(() => {
-    if (category1 && category1.categoryID){
+    if (category1 && category1.categoryID) {
       //console.log("category1 changed!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       getCategories(urlGetCateList, category1.categoryID, setCategoryList2);
     }
@@ -213,16 +270,16 @@ const EditProductView = ({productID}) => {
   const postCategory = (url, body) => {
     console.log(body);
 
-    if ( !body || !body.CategoryName.length){
+    if (!body || !body.CategoryName.length) {
       dispatch(setDialogMsg('Category name can not be empty. '));
       return;
-    } 
+    }
     // console.log(url);
     // console.log(body);
-    axios.post(url, body, {withCredentials: true}).then((res) => {
+    axios.post(url, body, { withCredentials: true }).then((res) => {
       dispatch(setDialogMsg('New category created'));
       getCategories(urlGetCateList, -1, setCategoryList1);
-      if (category1 && category1.categoryID){
+      if (category1 && category1.categoryID) {
         console.log("category1 changed!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         getCategories(urlGetCateList, category1.categoryID, setCategoryList2);
       }
@@ -231,12 +288,12 @@ const EditProductView = ({productID}) => {
         getCategories(urlGetCateList, category2.categoryID, setCategoryList3);
       }
     }).catch(err => {
-      if (!err.response){
+      if (!err.response) {
         dispatch(setDialogMsg('Server not responding, check internet connection. '));
       }
-      else if (err.response.status == 401){
+      else if (err.response.status == 401) {
         dispatch(setDialogMsg('Invalid login or login expired.'));
-      } 
+      }
       else if (err.response.status == 409) {
         dispatch(setDialogMsg('Category name is not available.'))
       }
@@ -268,21 +325,21 @@ const EditProductView = ({productID}) => {
     setCategoryName3('');
   }
 
-  ///////////////////////////////////////////////// Post Product ///////////////////////////////////////////////////////
-  
+  ///////////////////////////////////////////////// Update Product ///////////////////////////////////////////////////////
+
   function getProdCate() {
-    if (category3 && category3.categoryID){
+    if (category3 && category3.categoryID) {
       return category3.categoryID;
-    }else if (category2 && category2.categoryID) {
+    } else if (category2 && category2.categoryID) {
       return category2.categoryID;
-    }else if (category1 && category1.categoryID){
+    } else if (category1 && category1.categoryID) {
       return category1.categoryID;
     } else {
-      return undefined;
+      return prodCateID;
     }
   }
 
-  
+
   const formData = new FormData()
 
   const httpOption = {
@@ -293,6 +350,7 @@ const EditProductView = ({productID}) => {
   const urlCreateProd = API('Product');
 
   const handleCreate = () => {
+    formData.append('ProductID', productID);
     formData.append('ProductName', prodName);
     formData.append('ProductPrice', prodPrice);
     formData.append('ProductStock', prodStock);
@@ -301,15 +359,11 @@ const EditProductView = ({productID}) => {
     formData.append('FormFile1', file1);
     formData.append('FormFile2', file2);
     formData.append('FormFile3', file3);
-    if (prodName && prodName.length>0 && getProdCate() ){
-      axios.post(urlCreateProd, formData, httpOption).then((res) => {
-        if (res && res.status == 201) {
-          dispatch(setDialogMsg('Product created.'));
-          setCategory1({categoryName: ''});
-          setCategory2({categoryName: ''});
-          setCategory3({categoryName: ''});
-          setProdName('');
-          setProdDesc('');
+    if (prodName && prodName.length > 0 && prodCateID != 0) {
+      axios.put(urlCreateProd, formData, httpOption).then((res) => {
+        if (res && res.status == 204) {
+          dispatch(setDialogMsg('Product updated.'));
+          router.back();
         }
       })
     }
@@ -318,7 +372,7 @@ const EditProductView = ({productID}) => {
     }
   }
 
- ////////////////////////////////////////////////////// Render ////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////// Render ////////////////////////////////////////////////////
   return (
     <Box className={classes.root}>
       <Box className={classes.container}>
@@ -327,7 +381,7 @@ const EditProductView = ({productID}) => {
           Product name:
         </Typography>
         <TextField className={classes.prodName} label={'Product name'} variant={'outlined'} fullWidth size={'small'} onChange={changeProdName} value={prodName} />
-        
+
         <Typography variant={'p'} className={classes.inputTitle}>
           Product price:
         </Typography>
@@ -339,7 +393,7 @@ const EditProductView = ({productID}) => {
         <Typography variant={'p'} className={classes.inputTitle}>
           Product description:
         </Typography>
-        <TextareaAutosize className={classes.textArea} placeholder={'Empty'} maxRows={10} minRows={10} onChange={changeProdDesc} value={prodDesc}/>
+        <TextareaAutosize className={classes.textArea} placeholder={'Empty'} maxRows={10} minRows={10} onChange={changeProdDesc} value={prodDesc} />
 
         <Typography variant={'p'} className={classes.inputTitle}>
           Product category:
@@ -347,10 +401,13 @@ const EditProductView = ({productID}) => {
         <Grid className={classes.selectContainer} container alignItems={'center'} justifyContent={'space-between'}>
           {/*///////////////////////////////////////////////  Cate 1 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box>
+              <Typography>{catePath[0] && `>> ${catePath[0].categoryName}`}</Typography>
+            </Box>
             <FormControl variant={'standard'} className={classes.select}>
               <InputLabel id={'category1-label'} >Select Category</InputLabel>
               <Select labelId={'category1-label'} id={'category1'} value={category1.categoryName} onChange={changeCate1}>
-                {categoryList1.length >0 && categoryList1.map((item, index) => {
+                {categoryList1.length > 0 && categoryList1.map((item, index) => {
                   return (
                     <MenuItem key={index} value={item.categoryName}>{item.categoryName}</MenuItem>
                   );
@@ -358,16 +415,19 @@ const EditProductView = ({productID}) => {
               </Select>
             </FormControl>
             <Box className={classes.newCategoryBox}>
-              <TextField value={categoryName1} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName1}/>
-              <Button  onClick={createCategory1}>Submit</Button>
+              <TextField value={categoryName1} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName1} />
+              <Button onClick={createCategory1}>Submit</Button>
             </Box>
           </Grid>
-           {/*//////////////////////////////////////////////  Cate 2 ////////////////////////////////////////////*/}
+          {/*//////////////////////////////////////////////  Cate 2 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box>
+              <Typography>{catePath[1] && `>> ${catePath[1].categoryName}`}</Typography>
+            </Box>
             <FormControl variant={'standard'} className={classes.select}>
               <InputLabel id={'category1-label'} >Select Category</InputLabel>
               <Select labelId={'category1-label'} id={'category2'} value={(category2 && category2.categoryName) ? category2.categoryName : ''} onChange={changeCate2} disabled={disableCate2}>
-                {categoryList2.length >0 && categoryList2.map((item, index) => {
+                {categoryList2.length > 0 && categoryList2.map((item, index) => {
                   return (
                     <MenuItem key={index} value={item.categoryName}>{item.categoryName}</MenuItem>
                   );
@@ -375,16 +435,19 @@ const EditProductView = ({productID}) => {
               </Select>
             </FormControl>
             <Box className={classes.newCategoryBox}>
-              <TextField value={categoryName2} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName2} disabled={disableCate2}/>
+              <TextField value={categoryName2} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName2} disabled={disableCate2} />
               <Button onClick={createCategory2} disabled={disableCate2}>Submit</Button>
             </Box>
           </Grid>
-           {/*/////////////////////////  Cate 3 ////////////////////////////////////////////*/}
+          {/*/////////////////////////  Cate 3 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box>
+              <Typography>{catePath[2] && `>> ${catePath[2].categoryName}`}</Typography>
+            </Box>
             <FormControl variant={'standard'} className={classes.select}>
               <InputLabel id={'category1-label'} >Select Category</InputLabel>
               <Select labelId={'category1-label'} id={'category3'} value={(category3 && category3.categoryName) ? category3.categoryName : ''} onChange={changeCate3} disabled={disableCate3}>
-              {categoryList3.length >0 && categoryList3.map((item, index) => {
+                {categoryList3.length > 0 && categoryList3.map((item, index) => {
                   return (
                     <MenuItem key={index} value={item.categoryName}>{item.categoryName}</MenuItem>
                   );
@@ -392,8 +455,8 @@ const EditProductView = ({productID}) => {
               </Select>
             </FormControl>
             <Box className={classes.newCategoryBox}>
-              <TextField value={categoryName3} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName3} disabled={disableCate3}/>
-              <Button  onClick={createCategory3} disabled={disableCate3} >Submit</Button>
+              <TextField value={categoryName3} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName3} disabled={disableCate3} />
+              <Button onClick={createCategory3} disabled={disableCate3} >Submit</Button>
             </Box>
           </Grid>
         </Grid>
@@ -404,26 +467,35 @@ const EditProductView = ({productID}) => {
         <Grid className={classes.selectContainer} container alignItems={'center'} justifyContent={'space-between'}>
           {/*/////////////////////////  Picture 1 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box className={classes.imgContainer}>
+              <Box className={classes.image} component={'img'} src={img1}/>
+            </Box>
             <Box>
               <input type="file" accept="image/*" onChange={changeFile1} />
             </Box>
           </Grid>
-           {/*/////////////////////////  Picture 2 ////////////////////////////////////////////*/}
+          {/*/////////////////////////  Picture 2 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box className={classes.imgContainer}>
+              <Box className={classes.image} component={'img'} src={img2}/>
+            </Box>
             <Box>
               <input type="file" accept="image/*" onChange={changeFile2} />
             </Box>
           </Grid>
-           {/*/////////////////////////  Picture 3 ////////////////////////////////////////////*/}
+          {/*/////////////////////////  Picture 3 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box className={classes.imgContainer}>
+              <Box className={classes.image} component={'img'} src={img3}/>
+            </Box>
             <Box>
               <input type="file" accept="image/*" onChange={changeFile3} />
-            </Box>      
+            </Box>
           </Grid>
         </Grid>
-        <Box className={classes.buttonContainer}> 
-          <Button onClick={handleCreate} variant={'contained'} sx={{textTransform:'none'}}>
-            Create Product
+        <Box className={classes.buttonContainer}>
+          <Button onClick={handleCreate} variant={'contained'} sx={{ textTransform: 'none' }}>
+            Update Product
           </Button>
         </Box>
       </Box>

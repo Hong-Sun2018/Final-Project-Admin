@@ -19,7 +19,7 @@ const useStyles = makeStyles(
       justifyContent:'cennter'
     },
     container: {
-      width: '50%',
+      width: '80%',
       // backgroundColor: 'yellow',
     },
     inputTitle: {
@@ -56,7 +56,22 @@ const useStyles = makeStyles(
       flexDirection: 'row',
       justifyContent: 'center',
       marginTop: '50px' 
-    }
+    },
+    imgContainer: {
+      width: '225px',
+      height: '150px',
+      border: 'solid 1px',
+      borderColor: '#cccccc',
+      marginBottom: '12px',
+      marginTop: '15px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }, 
+    image: {
+      maxWidth: '225px',
+      maxHeight: '150px',
+    },
   }
 );
 
@@ -84,6 +99,10 @@ const AddProductView = () => {
   const [file2, setFile2] = useState();
   const [file3, setFile3] = useState();
 
+  const [img1, setImg1] = useState();
+  const [img2, setImg2] = useState();
+  const [img3, setImg3] = useState();
+
   const dispatch = useDispatch();
   const classes = useStyles();
   
@@ -110,27 +129,37 @@ const AddProductView = () => {
     setCategoryName1(event.target.value);
   }
   const changeCateName2 = (event)=>{
+    // console.log("categoryname3 changed!!!!!!!!!")
     setCategoryName2(event.target.value);
   }
-  const changeCateName3 = (event)=>{
-    // console.log("categoryname3 changed!!!!!!!!!")
+  const changeCateName3= (event) => {
     setCategoryName3(event.target.value);
     // console.log(categoryName3);
   }
 
   const changeFile1 = (event) => {
-    setFile1(event.target.files[0]);
+    if (event.target.files[0]){
+      setFile1(event.target.files[0]);
+      setImg1(URL.createObjectURL(event.target.files[0]));
+    }
   } 
   const changeFile2 = (event) => {
-    setFile2(event.target.files[0]);
+    if (event.target.files[0]){
+      setFile2(event.target.files[0]);
+      setImg2(URL.createObjectURL(event.target.files[0]))
+      // console.log(URL.createObjectURL(event.target.files[0]));
+    }
+    
   }
   const changeFile3 = (event) => {
-    setFile3(event.target.files[0]);
+    if (event.target.files[0]){
+      setFile3(event.target.files[0]);
+      setImg3(URL.createObjectURL(event.target.files[0]));
+    }
   }
 
   const changeProdName = (event) => {
     setProdName(event.target.value);
-    // console.log('change prod name');
   }
   const changeProdPrice = (event) => {
     setProdPrice(event.target.value);
@@ -161,12 +190,12 @@ const AddProductView = () => {
 
   const urlGetCateList = API('GetCategories');
   // get level 1 category
-  const getList1 = useEffect(() => {
+  useEffect(() => {
     getCategories(urlGetCateList, -1, setCategoryList1);
   }, []);
 
   // if have level 1 get level 2 category
-  const getList2 = useEffect(() => {
+  useEffect(() => {
     if (category1 && category1.categoryID){
       //console.log("category1 changed!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       getCategories(urlGetCateList, category1.categoryID, setCategoryList2);
@@ -174,7 +203,7 @@ const AddProductView = () => {
   }, [category1])
 
   // if have level 2 get level 3 category
-  const getList3 = useEffect(() => {
+  useEffect(() => {
     if (category2 && category2.categoryID) {
       //console.log("category2 changed !!!!!!!!!!!!!!!!!!!!!")
       getCategories(urlGetCateList, category2.categoryID, setCategoryList3);
@@ -346,8 +375,8 @@ const AddProductView = () => {
               </Select>
             </FormControl>
             <Box className={classes.newCategoryBox}>
-              <TextField value={categoryName1} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName1}/>
-              <Button  onClick={createCategory1}>Submit</Button>
+              <TextField value={categoryName1} variant={'filled'} label={'New category: '} fullWidth size={'small'} onChange={changeCateName1}/>
+              <Button  onClick={createCategory1} sx={{textTransform: 'none'}}>Add Category</Button>
             </Box>
           </Grid>
            {/*//////////////////////////////////////////////  Cate 2 ////////////////////////////////////////////*/}
@@ -363,8 +392,8 @@ const AddProductView = () => {
               </Select>
             </FormControl>
             <Box className={classes.newCategoryBox}>
-              <TextField value={categoryName2} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName2} disabled={disableCate2}/>
-              <Button onClick={createCategory2} disabled={disableCate2}>Submit</Button>
+              <TextField value={categoryName2} variant={'filled'} label={'New category: '} fullWidth size={'small'} onChange={changeCateName2} disabled={disableCate2}/>
+              <Button onClick={createCategory2} disabled={disableCate2} sx={{textTransform: 'none'}}>Add Category</Button>
             </Box>
           </Grid>
            {/*/////////////////////////  Cate 3 ////////////////////////////////////////////*/}
@@ -380,8 +409,8 @@ const AddProductView = () => {
               </Select>
             </FormControl>
             <Box className={classes.newCategoryBox}>
-              <TextField value={categoryName3} variant={'filled'} label={'Create new category: '} fullWidth size={'small'} onChange={changeCateName3} disabled={disableCate3}/>
-              <Button  onClick={createCategory3} disabled={disableCate3} >Submit</Button>
+              <TextField value={categoryName3} variant={'filled'} label={'New category: '} fullWidth size={'small'} onChange={changeCateName3} disabled={disableCate3}/>
+              <Button  onClick={createCategory3} disabled={disableCate3} sx={{textTransform: 'none'}}>Add Category</Button>
             </Box>
           </Grid>
         </Grid>
@@ -392,18 +421,27 @@ const AddProductView = () => {
         <Grid className={classes.selectContainer} container alignItems={'center'} justifyContent={'space-between'}>
           {/*/////////////////////////  Picture 1 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box className={classes.imgContainer}>
+              <Box className={classes.image} component={'img'} src={img1} src={img1}/>
+            </Box>
             <Box>
               <input type="file" accept="image/*" onChange={changeFile1} />
             </Box>
           </Grid>
            {/*/////////////////////////  Picture 2 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box className={classes.imgContainer}>
+              <Box className={classes.image} component={'img'} src={img2}/>
+            </Box>
             <Box>
               <input type="file" accept="image/*" onChange={changeFile2} />
             </Box>
           </Grid>
            {/*/////////////////////////  Picture 3 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
+            <Box className={classes.imgContainer}>
+              <Box className={classes.image} component={'img'} src={img3}/>
+            </Box>
             <Box>
               <input type="file" accept="image/*" onChange={changeFile3} />
             </Box>      

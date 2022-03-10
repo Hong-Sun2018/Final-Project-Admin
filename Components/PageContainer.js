@@ -5,10 +5,11 @@ const useStyles = makeStyles(
   {
     root: {
       width: '100%',
+      minHeight: '850px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       paddingTop: '150px',
       paddingBottom: '100px'
     },
@@ -24,7 +25,7 @@ const PageContainer = ({children, pageTitle}) => {
 
   return (
     <Box className={classes.root}> 
-      <Typography className={classes.pageTitle} variant={'h2'}>
+      <Typography className={classes.pageTitle} variant={'h2'} > 
         {pageTitle}
       </Typography>
       {children}

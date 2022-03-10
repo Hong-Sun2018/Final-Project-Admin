@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   logoBox: {
-    width: '20%',
+    width: '15%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -30,13 +30,13 @@ const useStyles = makeStyles({
 
   },
   navBox: {
-    width: '60%',
+    width: '70%',
     display:'flex',
     flexDirection: 'row',
     justifyContent: 'right'
   },
   userBox: {
-    width: '20%',
+    width: '15%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'right'
