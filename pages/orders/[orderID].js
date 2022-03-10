@@ -1,5 +1,5 @@
 import PageContainer from "../../Components/PageContainer";
-import OrderDetailView from "../../views/OrderView/OrderDetail/OrderDetailView";
+import OrderDetailView from "../../Views/OrderView/OrderDetail/OrderDetailView";
 
 const OrderDetailPage = () => {
   
