@@ -7,7 +7,8 @@ import API from "../../Constants/API";
 import axios from "axios";
 import { setDialogMsg } from "../../Redux/Reducer/DialogReducer";
 import { setUserInfo } from "../../Redux/Reducer/UserInfoReducer";
-import FormData from 'form-data'
+import FormData from 'form-data';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles(
   {
@@ -105,6 +106,7 @@ const AddProductView = () => {
 
   const dispatch = useDispatch();
   const classes = useStyles();
+  const router = useRouter();
   
   ///////////////////////////////////// Event handler ////////////////////////////////////////
   
@@ -327,6 +329,7 @@ const AddProductView = () => {
           setCategory3({categoryName: ''});
           setProdName('');
           setProdDesc('');
+          router.reload();
         }
       })
     }
@@ -422,7 +425,7 @@ const AddProductView = () => {
           {/*/////////////////////////  Picture 1 ////////////////////////////////////////////*/}
           <Grid item xs={12} sm={12} md={3.5} lg={3.5}>
             <Box className={classes.imgContainer}>
-              <Box className={classes.image} component={'img'} src={img1} src={img1}/>
+              <Box className={classes.image} component={'img'} src={img1} />
             </Box>
             <Box>
               <input type="file" accept="image/*" onChange={changeFile1} />
