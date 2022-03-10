@@ -85,9 +85,9 @@ const ProductDetailView = ({ productID }) => {
         setProdPrice(res.data.productPrice);
         setProdStock(res.data.productStock);
         setProdCateID(res.data.categoryID);
-        setImg1(`data:${res.data.fileType1};base64,${res.data.file1}`);
-        setImg2(`data:${res.data.fileType2};base64,${res.data.file2}`);
-        setImg3(`data:${res.data.fileType3};base64,${res.data.file3}`);
+        setImg1(res.data.file1);
+        setImg2(res.data.file2);
+        setImg3(res.data.file3);
       }
     }).catch(err => {
       console.log(err);
@@ -100,7 +100,7 @@ const ProductDetailView = ({ productID }) => {
       const url = `${API('GetCategoryPath')}?categoryID=${prodCateID}`;
       axios.get(url).then(res => {
         if (res && res.data) {
-          //console.log(res.data);
+          console.log(res.data);
           setCatePath(res.data);
         }
       }).catch(err => {

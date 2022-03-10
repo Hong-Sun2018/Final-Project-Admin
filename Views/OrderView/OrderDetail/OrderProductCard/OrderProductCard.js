@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 const ProductCard = ({ product }) => {
   console.log(product)
   const classes = useStyles();
-  const imgSrc = `data:${product.fileType1};base64,${product.file1}`;
+  const imgSrc = product.file1;
 
   return (
     <Box className={classes.root} >

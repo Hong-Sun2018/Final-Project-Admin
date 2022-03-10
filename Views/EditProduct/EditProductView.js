@@ -188,9 +188,9 @@ const EditProductView = ({ productID }) => {
         setProdPrice(res.data.productPrice);
         setProdStock(res.data.productStock);
         setProdCateID(res.data.categoryID);
-        setImg1(`data:${res.data.fileType1};base64,${res.data.file1}`);
-        setImg2(`data:${res.data.fileType2};base64,${res.data.file2}`);
-        setImg3(`data:${res.data.fileType3};base64,${res.data.file3}`);
+        setImg1(res.data.file1);
+        setImg2(res.data.file2);
+        setImg3(res.data.file3);
       }
     }).catch(err => {
       console.log(err);

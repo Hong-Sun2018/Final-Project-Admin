@@ -35,7 +35,7 @@ const UserList = ({user}) => {
     <Box className={classes.root}>
       {userList.map((item, index) => {
         return (
-          <UserCard user={item} />
+          <UserCard user={item} key={index} />
         );
       })}
     </Box>
