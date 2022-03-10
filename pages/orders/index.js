@@ -1,5 +1,5 @@
 import PageContainer from '../../Components/PageContainer';
-import OrderListView from '../../views/OrderView/OrderList/OrderListView';
+import OrderListView from '../../Views/OrderView/OrderList/OrderListView';
 
 const OrderListPage = () => {
 
