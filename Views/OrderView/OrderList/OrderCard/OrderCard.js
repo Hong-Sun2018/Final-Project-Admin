@@ -47,7 +47,7 @@ const OrderCard = ({order}) => {
       </Box>
       <Box className={classes.container}>
         <Typography color={'#cccccc'}>Order Date:</Typography>
-        <Typography>{`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}</Typography>
+        <Typography>{`${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`}</Typography>
       </Box>
       <Box className={classes.container}>
         <Typography color={'#cccccc'}>Total Amount</Typography>
